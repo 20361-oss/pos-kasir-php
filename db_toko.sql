@@ -11,6 +11,18 @@ MySQL - 10.6.11-MariaDB-log : Database - db_toko
 /*!40014 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0 */;
 /*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
+
+/*
+Migration for EXISTING installs (created before this update):
+run this once against your live database so the login.pass column can
+hold the new password_hash()/bcrypt values instead of raw MD5:
+
+ALTER TABLE `login` MODIFY `pass` varchar(255) NOT NULL;
+
+New installs using the CREATE TABLE statements below already get the
+wider column and do not need this step.
+*/
+
 /*Table structure for table `barang` */
 
 DROP TABLE IF EXISTS `barang`;
@@ -63,7 +75,7 @@ DROP TABLE IF EXISTS `login`;
 CREATE TABLE `login` (
   `id_login` int(11) NOT NULL AUTO_INCREMENT,
   `user` varchar(255) NOT NULL,
-  `pass` char(32) NOT NULL,
+  `pass` varchar(255) NOT NULL,
   `id_member` int(11) NOT NULL,
   PRIMARY KEY (`id_login`)
 ) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;

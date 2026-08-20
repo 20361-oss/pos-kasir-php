@@ -56,3 +56,26 @@ if (!function_exists('csrf_require_token')) {
         }
     }
 }
+
+if (!function_exists('session_enforce_timeout')) {
+    function session_enforce_timeout(int $maxIdleSeconds = 1800): void
+    {
+        if (session_status() === PHP_SESSION_NONE) {
+            session_start();
+        }
+        if (empty($_SESSION['admin'])) {
+            return;
+        }
+        $now = time();
+        if (!empty($_SESSION['last_activity']) && ($now - (int) $_SESSION['last_activity']) > $maxIdleSeconds) {
+            $_SESSION = [];
+            if (ini_get('session.use_cookies')) {
+                $params = session_get_cookie_params();
+                setcookie(session_name(), '', time() - 42000, $params['path'], $params['domain'], $params['secure'], $params['httponly']);
+            }
+            session_destroy();
+            return;
+        }
+        $_SESSION['last_activity'] = $now;
+    }
+}

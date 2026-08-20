@@ -15,6 +15,18 @@ Sebagai tindak lanjut atas laporan kerentanan yang telah dipublikasikan, versi t
 
 Harap selalu memperbarui instalasi Anda dengan perubahan terbaru dan meninjau ulang konfigurasi server sebelum digunakan di lingkungan produksi.
 
+## Daftar Temuan Keamanan
+
+| Kode Bug | Deskripsi | Temuan / Dampak | Rekomendasi | Status |
+|---|---|---|---|---|
+| BUGSEC-01 | CSRF (Cross-Site Request Forgery) | Penyerang bisa mengubah data (hapus barang/user) tanpa izin pemilik akun. | Implementasikan CSRF Token pada setiap form POST. | ✅ Sudah diperbaiki — token CSRF (`fungsi/csrf.php`) diverifikasi dengan `hash_equals()` pada seluruh alur tambah/ubah/hapus data. |
+| BUGSEC-02 | XSS (Cross-Site Scripting) | Injeksi skrip berbahaya melalui input nama barang, kategori, nama toko, dsb. | Gunakan fungsi `htmlspecialchars()` atau sanitasi parameter. | ✅ Sudah diperbaiki — seluruh output data dinamis di-escape dengan `htmlspecialchars(..., ENT_QUOTES, 'UTF-8')`, termasuk celah pada `admin/template/sidebar.php` yang baru ditutup. |
+| BUGSEC-03 | Broken Access Control | Pengguna yang tidak sah dapat mengunduh berkas laporan ekspor. | Tambahkan validasi session pada file unduhan. | ✅ Sudah diperbaiki — `excel.php` dan `print.php` memvalidasi `$_SESSION['admin']` sebelum mengeluarkan konten. |
+| BUGLOG-04 | Session Timeout | Sesi pengguna tidak berakhir otomatis setelah idle lama. | Atur durasi `session.gc_maxlifetime` di server/aplikasi. | ✅ Sudah diperbaiki — ditambahkan pengecekan idle timeout di level aplikasi (`session_enforce_timeout()` pada `fungsi/csrf.php`, dipanggil dari `index.php`, `excel.php`, `print.php`, dan `fungsi/edit/edit.php`) yang men-*destroy* sesi setelah 30 menit tanpa aktivitas, tidak hanya bergantung pada `gc_maxlifetime` server. |
+| BUGVAL-05 | File Upload Vulnerability | Risiko eksekusi kode melalui unggahan file ilegal. | Batasi ekstensi file hanya untuk `.jpg` atau `.png`. | ✅ Sudah diperbaiki — validasi tipe file dilakukan berdasarkan *MIME* asli (`finfo_file`, bukan sekadar ekstensi), dibatasi maks. 4 MB, disimpan dengan nama acak, dan direktori unggahan (`assets/img/user`) menonaktifkan eksekusi PHP lewat `.htaccess`. |
+
+Selain lima temuan di atas, perbaikan tambahan juga diterapkan: hashing kata sandi dimigrasikan dari MD5 ke `password_hash()`/bcrypt (dengan verifikasi mundur otomatis untuk akun lama), `session_regenerate_id()` dipanggil setelah login untuk mencegah *session fixation*, serta direktori `.git` dan berkas `db_toko.sql` diblokir dari akses HTTP langsung lewat `.htaccess`.
+
 ## Donasi
 Dukungan dapat diberikan melalui Saweria: <https://saweria.co/fauzan1892>
 

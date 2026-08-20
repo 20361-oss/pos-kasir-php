@@ -15,10 +15,11 @@
 
 	@ob_start();
 	session_start();
+	require_once 'fungsi/csrf.php';
+	session_enforce_timeout();
 
         if(!empty($_SESSION['admin'])){
                 require 'config.php';
-                require_once 'fungsi/csrf.php';
                 csrf_get_token();
                 csrf_guard();
                 include $view;

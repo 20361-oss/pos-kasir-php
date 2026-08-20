@@ -90,7 +90,7 @@
             <button id="sidebarToggleTop" class="btn btn-link d-md-none rounded-circle mr-3">
                 <i class="fa fa-bars"></i>
             </button>
-            <h5 class="d-lg-block d-none mt-2"><b><?php echo $toko['nama_toko'];?>, <?php echo $toko['alamat_toko'];?></b></h5>
+            <h5 class="d-lg-block d-none mt-2"><b><?php echo htmlspecialchars($toko['nama_toko'] ?? '', ENT_QUOTES, 'UTF-8');?>, <?php echo htmlspecialchars($toko['alamat_toko'] ?? '', ENT_QUOTES, 'UTF-8');?></b></h5>
             <!-- Topbar Navbar -->
             <ul class="navbar-nav ml-auto">
                 <!-- <div class="topbar-divider d-none d-sm-block"></div> -->
@@ -100,9 +100,9 @@
                     <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-toggle="dropdown"
                         aria-haspopup="true" aria-expanded="false">
                         <img class="img-profile rounded-circle"
-                            src="assets/img/user/<?php echo $hasil_profil['gambar'];?>">
+                            src="assets/img/user/<?php echo htmlspecialchars($hasil_profil['gambar'] ?? '', ENT_QUOTES, 'UTF-8');?>">
                         <span
-                            class="mr-2 d-none d-lg-inline text-gray-600 small ml-2"><?php echo $hasil_profil['nm_member'];?></span>
+                            class="mr-2 d-none d-lg-inline text-gray-600 small ml-2"><?php echo htmlspecialchars($hasil_profil['nm_member'] ?? '', ENT_QUOTES, 'UTF-8');?></span>
                         <i class="fas fa-angle-down"></i>
                     </a>
                     <!-- Dropdown - User Information -->

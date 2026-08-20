@@ -2,6 +2,8 @@
     declare(strict_types=1);
 	@ob_start();
 	session_start();
+    require_once 'fungsi/csrf.php';
+    session_enforce_timeout();
     if (empty($_SESSION['admin'])) {
         header('Location: login.php');
         exit;

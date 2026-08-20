@@ -1,8 +1,9 @@
 <?php
 session_start();
+require_once __DIR__.'/../csrf.php';
+session_enforce_timeout();
 if (!empty($_SESSION['admin'])) {
     require '../../config.php';
-    require_once __DIR__.'/../csrf.php';
     csrf_guard();
     if (!function_exists('sanitize_scalar_input')) {
         function sanitize_scalar_input($value, bool $allowNewlines = false): string
@@ -277,9 +278,14 @@ if (!empty($_SESSION['admin'])) {
 
         $user = get_post_string('user');
         $pass = get_post_string('pass');
+        if ($pass === '') {
+            echo '<script>alert("Password tidak boleh kosong");history.go(-1);</script>';
+            exit;
+        }
+        $passHash = password_hash($pass, PASSWORD_DEFAULT);
 
-        $data = [$user, $pass, $id];
-        $sql = 'UPDATE login SET user=?,pass=md5(?) WHERE id_member=?';
+        $data = [$user, $passHash, $id];
+        $sql = 'UPDATE login SET user=?,pass=? WHERE id_member=?';
         $row = $config->prepare($sql);
         $row->execute($data);
         echo '<script>window.location="../../index.php?page=user&success=edit-data"</script>';

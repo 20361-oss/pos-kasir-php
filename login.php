@@ -7,14 +7,30 @@
 		$user = strip_tags($_POST['user']);
 		$pass = strip_tags($_POST['pass']);
 
-		$sql = 'select member.*, login.user, login.pass
+		$sql = 'select member.*, login.id_login, login.user, login.pass
 				from member inner join login on member.id_member = login.id_member
-				where user =? and pass = md5(?)';
+				where user = ?';
 		$row = $config->prepare($sql);
-		$row -> execute(array($user,$pass));
-		$jum = $row -> rowCount();
-		if($jum > 0){
-			$hasil = $row -> fetch();
+		$row -> execute(array($user));
+		$hasil = $row -> fetch();
+
+		$validLogin = false;
+		if ($hasil) {
+			$storedHash = $hasil['pass'];
+			if (password_verify($pass, $storedHash)) {
+				$validLogin = true;
+			} elseif (preg_match('/^[a-f0-9]{32}$/i', $storedHash) && hash_equals($storedHash, md5($pass))) {
+				// Legacy MD5 hash: accept once, then transparently upgrade to a strong hash
+				$validLogin = true;
+				$newHash = password_hash($pass, PASSWORD_DEFAULT);
+				$upd = $config->prepare('UPDATE login SET pass = ? WHERE id_login = ?');
+				$upd->execute([$newHash, $hasil['id_login']]);
+			}
+		}
+
+		if ($validLogin) {
+			session_regenerate_id(true);
+			unset($hasil['pass']);
 			$_SESSION['admin'] = $hasil;
 			echo '<script>alert("Login Sukses");window.location="index.php"</script>';
 		}else{

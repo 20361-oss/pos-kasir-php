@@ -19,11 +19,24 @@ include $view;
 
 $lihat = new view($config);
 $toko  = $lihat->toko();
-$hsl   = $lihat->penjualan();
-$hasil = $lihat->jumlah();
 
 function rupiah(float $n): string {
     return 'Rp ' . number_format($n, 0, ',', '.');
+}
+
+$notrxRaw = filter_input(INPUT_GET, 'notrx', FILTER_UNSAFE_RAW, ['flags' => FILTER_FLAG_NO_ENCODE_QUOTES]);
+$notrx    = (is_string($notrxRaw) && preg_match('/^[A-Za-z0-9-]{6,50}$/', trim($notrxRaw))) ? trim($notrxRaw) : '';
+
+if ($notrx !== '') {
+    $hsl = $lihat->nota_transaksi($notrx);
+    $totalBayar = 0.0;
+    foreach ($hsl as $isi) {
+        $totalBayar += (float) ($isi['total'] ?? 0);
+    }
+} else {
+    $hsl   = $lihat->penjualan();
+    $hasil = $lihat->jumlah();
+    $totalBayar = isset($hasil['bayar']) ? (float) $hasil['bayar'] : 0.0;
 }
 
 $nmMember       = (string) filter_input(INPUT_GET, 'nm_member', FILTER_UNSAFE_RAW, FILTER_FLAG_STRIP_LOW);
@@ -33,8 +46,6 @@ $bayarInput     = filter_input(INPUT_GET, 'bayar', FILTER_VALIDATE_FLOAT);
 $kembaliInput   = filter_input(INPUT_GET, 'kembali', FILTER_VALIDATE_FLOAT);
 $bayarNominal   = ($bayarInput !== false && $bayarInput !== null) ? (float) $bayarInput : 0.0;
 $kembaliNominal = ($kembaliInput !== false && $kembaliInput !== null) ? (float) $kembaliInput : 0.0;
-
-$totalBayar = isset($hasil['bayar']) ? (float) $hasil['bayar'] : 0.0;
 ?>
 <!DOCTYPE html>
 <html lang="id">
@@ -120,6 +131,10 @@ $totalBayar = isset($hasil['bayar']) ? (float) $hasil['bayar'] : 0.0;
 
         <!-- Meta -->
         <div class="meta mb-8">
+            <?php if ($notrx !== ''): ?>
+            <div>No. Transaksi</div>
+            <div><?= htmlspecialchars($notrx, ENT_QUOTES, 'UTF-8'); ?></div>
+            <?php endif; ?>
             <div>Tanggal</div>
             <div><?= date('d/m/Y H:i'); ?></div>
             <div>Kasir</div>

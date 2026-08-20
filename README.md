@@ -5,6 +5,14 @@ POS Codekop v2.0 adalah aplikasi kasir (point of sale) berbasis PHP dan MySQL ya
 ## Status Proyek
 Pengembangan aktif aplikasi ini telah dihentikan. Namun, repositori tetap dibuka untuk kontribusi komunitas. Silakan ajukan _pull request_ apabila ingin menambahkan fitur baru, melakukan pemeliharaan, atau memperbaiki permasalahan lainnya.
 
+Dibutuhkan **PHP 8.2** ke atas beserta ekstensi `pdo_mysql` dan `fileinfo`. Kode telah ditinjau dan diuji jalan pada PHP 8.2.
+
+## Butuh Versi yang Lebih Lengkap?
+Repositori ini adalah edisi belajar/opensource dan tidak lagi dikembangkan aktif. Jika butuh aplikasi POS yang terus diperbarui, lengkap dengan dukungan teknis, silakan lihat produk resmi dari Codekop:
+
+- **POS Kasir PHP & MySQL (Full Version)** – <https://www.codekop.com/products/source-code-aplikasi-pos-penjualan-barang-kasir-dengan-php-mysql-3.html>
+- **Varian POS Kasir lainnya** – <https://www.codekop.com/products/pos-kasir.html>
+
 ## Klarifikasi Keamanan CVE Fixed
 Sebagai tindak lanjut atas laporan kerentanan yang telah dipublikasikan, versi terbaru repositori ini telah mendapatkan perbaikan keamanan dari tim Codex dengan cakupan berikut:
 
@@ -81,24 +89,18 @@ Sesuaikan kredensial koneksi pada `config.php` dengan nama basis data, pengguna,
 - Pengaturan Pengguna  
   ![](https://raw.githubusercontent.com/fauzan1892/pos-kasir-php/master/assets/img/pic/7.png)
 
-21 Agustus 2026
-Migrasi hashing kata sandi dari MD5 ke password_hash()/bcrypt, dengan upgrade otomatis untuk akun lama saat login.
-Penambahan session_regenerate_id() setelah login untuk mencegah session fixation.
-Penerapan idle session timeout 30 menit di seluruh endpoint admin (index.php, excel.php, print.php, fungsi/edit/edit.php).
-Penutupan celah XSS pada admin/template/sidebar.php dengan htmlspecialchars().
-Pemblokiran akses langsung ke .git, .sql, .env, .log, .md lewat .htaccess.
-20 September 2025
-Pembaruan dokumentasi untuk menjelaskan status pemeliharaan dan klarifikasi keamanan terkini.
-Penambahan mitigasi kerentanan CVE-2023-36345 hingga CVE-2023-36348 melalui validasi input, pembatasan akses, dan perlindungan CSRF.
-Penyeragaman tampilan cetak struk agar kompatibel dengan printer thermal serta pengetatan sanitasi data cetak.
-
 ## Riwayat Perubahan
 - **21 Agustus 2026**
+  - Kasir (`admin/module/jual/index.php`) dirombak jadi layout dua kolom (cari barang & keranjang) yang hidup lewat AJAX (`fungsi/kasir/kasir.php`) — tanpa reload halaman, kembalian dihitung langsung saat mengetik.
+  - Setiap transaksi kini punya nomor transaksi (`no_transaksi`, format `YYYYMMDD-XXX`) yang menghubungkan seluruh item dalam satu nota; struk bisa dicetak ulang kapan saja lewat `print.php?notrx=...`.
+  - Laporan (`admin/module/laporan/index.php`) dikelompokkan per transaksi, dengan modal **Detail** untuk rincian item, tombol **Cetak Ulang**, dan **Hapus** (membatalkan transaksi sekaligus mengembalikan stok barang).
+  - `excel.php` menambahkan kolom No Transaksi pada ekspor data (tetap per-item, tidak dikelompokkan).
   - Migrasi hashing kata sandi dari MD5 ke `password_hash()`/bcrypt, dengan upgrade otomatis untuk akun lama saat login.
   - Penambahan `session_regenerate_id()` setelah login untuk mencegah *session fixation*.
-  - Penerapan idle session timeout 30 menit di seluruh endpoint admin (`index.php`, `excel.php`, `print.php`, `fungsi/edit/edit.php`).
+  - Penerapan idle session timeout 30 menit di seluruh endpoint admin (`index.php`, `excel.php`, `print.php`, `fungsi/edit/edit.php`, `fungsi/kasir/kasir.php`).
   - Penutupan celah XSS pada `admin/template/sidebar.php` dengan `htmlspecialchars()`.
   - Pemblokiran akses langsung ke `.git`, `.sql`, `.env`, `.log`, `.md` lewat `.htaccess`.
+  - Kompatibilitas dan pengujian dilakukan pada PHP 8.2.
 - **20 September 2025**
   - Pembaruan dokumentasi untuk menjelaskan status pemeliharaan dan klarifikasi keamanan terkini.
   - Penambahan mitigasi kerentanan CVE-2023-36345 hingga CVE-2023-36348 melalui validasi input, pembatasan akses, dan perlindungan CSRF.

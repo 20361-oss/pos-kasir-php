@@ -19,8 +19,14 @@ hold the new password_hash()/bcrypt values instead of raw MD5:
 
 ALTER TABLE `login` MODIFY `pass` varchar(255) NOT NULL;
 
+Run this once so existing sale records can be grouped into one receipt
+per checkout (needed for the "print by transaction number" feature):
+
+ALTER TABLE `nota` ADD COLUMN `no_transaksi` varchar(50) NOT NULL DEFAULT '' AFTER `id_nota`;
+ALTER TABLE `nota` ADD INDEX `idx_no_transaksi` (`no_transaksi`);
+
 New installs using the CREATE TABLE statements below already get the
-wider column and do not need this step.
+column and index and do not need this step.
 */
 
 /*Table structure for table `barang` */
@@ -111,13 +117,15 @@ DROP TABLE IF EXISTS `nota`;
 
 CREATE TABLE `nota` (
   `id_nota` int(11) NOT NULL AUTO_INCREMENT,
+  `no_transaksi` varchar(50) NOT NULL,
   `id_barang` varchar(255) NOT NULL,
   `id_member` int(11) NOT NULL,
   `jumlah` varchar(255) NOT NULL,
   `total` varchar(255) NOT NULL,
   `tanggal_input` varchar(255) NOT NULL,
   `periode` varchar(255) DEFAULT NULL,
-  PRIMARY KEY (`id_nota`)
+  PRIMARY KEY (`id_nota`),
+  KEY `idx_no_transaksi` (`no_transaksi`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
 
 /*Data for the table `nota` */

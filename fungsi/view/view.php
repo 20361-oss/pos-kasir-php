@@ -221,6 +221,19 @@ class view
         return $hasil;
     }
 
+    public function nota_transaksi($noTransaksi)
+    {
+        $sql = "SELECT nota.*, barang.nama_barang
+                FROM nota
+                LEFT JOIN barang ON barang.id_barang = nota.id_barang
+                WHERE nota.no_transaksi = ?
+                ORDER BY nota.id_nota ASC";
+        $row = $this-> db -> prepare($sql);
+        $row -> execute(array($noTransaksi));
+        $hasil = $row -> fetchAll();
+        return $hasil;
+    }
+
     public function penjualan()
     {
         $sql ="SELECT penjualan.* , barang.id_barang, barang.nama_barang, member.id_member,

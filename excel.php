@@ -74,6 +74,7 @@
             <thead>
                 <tr bgcolor="yellow">
                     <th> No</th>
+                    <th> No Transaksi</th>
                     <th> ID Barang</th>
                     <th> Nama Barang</th>
                     <th style="width:10%;"> Jumlah</th>
@@ -110,6 +111,7 @@
                 ?>
                 <tr>
                     <td><?php echo $no;?></td>
+                    <td><?= !empty($isi['no_transaksi']) ? htmlspecialchars($isi['no_transaksi'], ENT_QUOTES, 'UTF-8') : '-';?></td>
                     <td><?= htmlspecialchars($isi['id_barang'], ENT_QUOTES, 'UTF-8');?></td>
                     <td><?= htmlspecialchars($isi['nama_barang'], ENT_QUOTES, 'UTF-8');?></td>
                     <td><?= htmlspecialchars($isi['jumlah'], ENT_QUOTES, 'UTF-8');?> </td>
@@ -120,6 +122,7 @@
                 </tr>
                 <?php $no++; }?>
                 <tr>
+                    <td>-</td>
                     <td>-</td>
                     <td>-</td>
                     <td><b>Total Terjual</b></td>

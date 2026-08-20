@@ -98,4 +98,43 @@ if (!empty($_SESSION['admin'])) {
         $row->execute();
         echo '<script>window.location="../../index.php?page=laporan&remove=hapus"</script>';
     }
+
+    if (get_get_param('notrx') !== '') {
+        $noTransaksi = get_get_param('notrx');
+        if ($noTransaksi === '' || !preg_match('/^[A-Za-z0-9-]{6,50}$/', $noTransaksi)) {
+            echo '<script>alert("Transaksi tidak valid");history.go(-1);</script>';
+            exit;
+        }
+
+        $sqlItems = 'SELECT id_barang, jumlah FROM nota WHERE no_transaksi = ?';
+        $rowItems = $config->prepare($sqlItems);
+        $rowItems->execute([$noTransaksi]);
+        $items = $rowItems->fetchAll();
+
+        if (!$items) {
+            echo '<script>alert("Transaksi tidak ditemukan");history.go(-1);</script>';
+            exit;
+        }
+
+        $config->beginTransaction();
+        try {
+            foreach ($items as $item) {
+                $sqlStok = 'UPDATE barang SET stok = stok + ? WHERE id_barang = ?';
+                $stmtStok = $config->prepare($sqlStok);
+                $stmtStok->execute([(int) $item['jumlah'], $item['id_barang']]);
+            }
+
+            $sqlDelete = 'DELETE FROM nota WHERE no_transaksi = ?';
+            $rowDelete = $config->prepare($sqlDelete);
+            $rowDelete->execute([$noTransaksi]);
+
+            $config->commit();
+        } catch (Throwable $e) {
+            $config->rollBack();
+            echo '<script>alert("Gagal menghapus transaksi");history.go(-1);</script>';
+            exit;
+        }
+
+        echo '<script>window.location="../../index.php?page=laporan&remove=hapus-data"</script>';
+    }
 }

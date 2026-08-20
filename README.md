@@ -1,4 +1,4 @@
-# POS Codekop v2.0
+# POS Codekop v2.2
 ## Deskripsi Umum
 POS Codekop v2.0 adalah aplikasi kasir (point of sale) berbasis PHP dan MySQL yang dirancang untuk membantu usaha ritel skala kecil mengelola penjualan harian. Kode sumber ini terbuka untuk dipelajari, dimodifikasi, dan disesuaikan sehingga cocok digunakan sebagai bahan belajar pengembangan web maupun pondasi proyek POS ringan.
 
@@ -80,6 +80,17 @@ Sesuaikan kredensial koneksi pada `config.php` dengan nama basis data, pengguna,
   ![](https://raw.githubusercontent.com/fauzan1892/pos-kasir-php/master/assets/img/pic/6.png)
 - Pengaturan Pengguna  
   ![](https://raw.githubusercontent.com/fauzan1892/pos-kasir-php/master/assets/img/pic/7.png)
+
+21 Agustus 2026
+Migrasi hashing kata sandi dari MD5 ke password_hash()/bcrypt, dengan upgrade otomatis untuk akun lama saat login.
+Penambahan session_regenerate_id() setelah login untuk mencegah session fixation.
+Penerapan idle session timeout 30 menit di seluruh endpoint admin (index.php, excel.php, print.php, fungsi/edit/edit.php).
+Penutupan celah XSS pada admin/template/sidebar.php dengan htmlspecialchars().
+Pemblokiran akses langsung ke .git, .sql, .env, .log, .md lewat .htaccess.
+20 September 2025
+Pembaruan dokumentasi untuk menjelaskan status pemeliharaan dan klarifikasi keamanan terkini.
+Penambahan mitigasi kerentanan CVE-2023-36345 hingga CVE-2023-36348 melalui validasi input, pembatasan akses, dan perlindungan CSRF.
+Penyeragaman tampilan cetak struk agar kompatibel dengan printer thermal serta pengetatan sanitasi data cetak.
 
 ## Riwayat Perubahan
 - **21 Agustus 2026**

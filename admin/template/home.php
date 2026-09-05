@@ -89,7 +89,59 @@
                 <a href='index.php?page=kategori'>Tabel
                     Kategori <i class='fa fa-angle-double-right'></i></a>
             </div>
-        </div>
         <!--/grey-card -->
     </div><!-- /col-md-3-->
 </div>
+
+<!-- Chart Section -->
+<div class="row">
+    <div class="col-md-12 mb-3">
+        <div class="card">
+            <div class="card-header bg-primary text-white">
+                <h6 class="pt-2"><i class="fas fa-chart-line"></i> Grafik Penjualan Per Bulan</h6>
+            </div>
+            <div class="card-body">
+                <canvas id="salesChart" width="100%" height="30"></canvas>
+            </div>
+        </div>
+    </div>
+</div>
+
+<?php 
+$penjualan_bulanan = $lihat->penjualan_perbulan();
+$labels = [];
+$data = [];
+foreach($penjualan_bulanan as $pb) {
+    $labels[] = $pb['periode'];
+    $data[] = $pb['total_penjualan'];
+}
+?>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+    var ctx = document.getElementById('salesChart').getContext('2d');
+    var salesChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: <?php echo json_encode($labels); ?>,
+            datasets: [{
+                label: 'Total Penjualan (Rp)',
+                data: <?php echo json_encode($data); ?>,
+                backgroundColor: 'rgba(54, 162, 235, 0.2)',
+                borderColor: 'rgba(54, 162, 235, 1)',
+                borderWidth: 2,
+                fill: true,
+                tension: 0.3
+            }]
+        },
+        options: {
+            scales: {
+                y: {
+                    beginAtZero: true
+                }
+            }
+        }
+    });
+});
+</script>

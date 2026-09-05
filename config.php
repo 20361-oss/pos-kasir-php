@@ -24,13 +24,17 @@ error_reporting(0);
 	$pass 	= ''; // password server, kalau pakai xampp kosongin saja
 	$dbname = 'db_toko'; // nama database anda
 	
-	try{
-		$config = new PDO("mysql:host=$host;dbname=$dbname;", $user,$pass);
-		//echo 'sukses';
-	}catch(PDOException $e){
-		echo 'KONEKSI GAGAL' .$e -> getMessage();
-	}
-	
-	$view = 'fungsi/view/view.php'; // direktori fungsi select data
-?>
+	try {
+    $config = new PDO("mysql:host=$host;dbname=$dbname;", $user, $pass);
+    $config->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+} catch (PDOException $e) {
+    echo 'KONEKSI GAGAL ' . $e->getMessage();
+}
 
+$view = 'fungsi/view/view.php'; 
+
+// Load Composer autoload
+if (file_exists(__DIR__ . '/vendor/autoload.php')) {
+    require_once __DIR__ . '/vendor/autoload.php';
+}
+?>

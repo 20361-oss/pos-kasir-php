@@ -88,11 +88,16 @@
 
                                 <?php if ($cariActive && $bulanPost !== '' && $tahunPost !== '') { ?>
                                 <a href="excel.php?cari=yes&bln=<?= urlencode($bulanPost); ?>&thn=<?= urlencode($tahunPost); ?>"
-                                    class="btn btn-info"><i class="fa fa-download"></i>
+                                    class="btn btn-info"><i class="fa fa-file-excel"></i>
                                     Excel</a>
+                                <a href="pdf.php?cari=yes&bln=<?= urlencode($bulanPost); ?>&thn=<?= urlencode($tahunPost); ?>"
+                                    class="btn btn-danger"><i class="fa fa-file-pdf"></i>
+                                    PDF</a>
                                 <?php } else { ?>
-                                <a href="excel.php" class="btn btn-info"><i class="fa fa-download"></i>
+                                <a href="excel.php" class="btn btn-info"><i class="fa fa-file-excel"></i>
                                     Excel</a>
+                                <a href="pdf.php" class="btn btn-danger"><i class="fa fa-file-pdf"></i>
+                                    PDF</a>
                                 <?php } ?>
                             </td>
                         </tr>
@@ -119,11 +124,16 @@
 
                                 <?php if ($hariActive && $hariPost !== '') { ?>
                                 <a href="excel.php?hari=cek&tgl=<?= urlencode($hariPost); ?>" class="btn btn-info"><i
-                                        class="fa fa-download"></i>
+                                        class="fa fa-file-excel"></i>
                                     Excel</a>
+                                <a href="pdf.php?hari=cek&tgl=<?= urlencode($hariPost); ?>" class="btn btn-danger"><i
+                                        class="fa fa-file-pdf"></i>
+                                    PDF</a>
                                 <?php } else { ?>
-                                <a href="excel.php" class="btn btn-info"><i class="fa fa-download"></i>
+                                <a href="excel.php" class="btn btn-info"><i class="fa fa-file-excel"></i>
                                     Excel</a>
+                                <a href="pdf.php" class="btn btn-danger"><i class="fa fa-file-pdf"></i>
+                                    PDF</a>
                                 <?php } ?>
                             </td>
                         </tr>
@@ -220,6 +230,9 @@
                                     <a href="print.php?notrx=<?= urlencode($t['no_transaksi']); ?>&nm_member=<?= urlencode($t['nm_member']); ?>"
                                         target="_blank" class="btn btn-secondary btn-sm">
                                         <i class="fa fa-print"></i> Cetak Ulang</a>
+                                    <a href="print_thermal.php?notrx=<?= urlencode($t['no_transaksi']); ?>&nm_member=<?= urlencode($t['nm_member']); ?>"
+                                        target="_blank" class="btn btn-warning btn-sm">
+                                        <i class="fa fa-print"></i> Thermal</a>
                                     <a class="btn btn-danger btn-sm"
                                         onclick="javascript:return confirm('Hapus transaksi ini dan kembalikan stok barangnya?');"
                                         href="fungsi/hapus/hapus.php?notrx=<?= urlencode($t['no_transaksi']); ?>&csrf_token=<?= urlencode(csrf_get_token()); ?>">

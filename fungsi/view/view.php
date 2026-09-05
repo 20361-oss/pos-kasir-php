@@ -273,4 +273,13 @@ class view
         $hasil = $row -> fetch();
         return $hasil;
     }
+
+    public function penjualan_perbulan()
+    {
+        $sql ="SELECT periode, SUM(total) as total_penjualan FROM nota GROUP BY periode ORDER BY STR_TO_DATE(CONCAT('01-', periode), '%d-%m-%Y') ASC LIMIT 12";
+        $row = $this -> db -> prepare($sql);
+        $row -> execute();
+        $hasil = $row -> fetchAll();
+        return $hasil;
+    }
 }
